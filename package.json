@@ -1,0 +1,42 @@
+{
+  "name": "encourage.io",
+  "version": "0.0.0",
+  "description": "List who you want to encourage, see how long it's been since you've done so.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/adambrault/encourage.io.git"
+  },
+  "author": "Adam Brault",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adambrault/encourage.io/issues"
+  },
+  "homepage": "https://github.com/adambrault/encourage.io",
+  "dependencies": {
+    "hapi": "~2.0.0-preview",
+    "jade": "~1.1.4",
+    "levelup": "~0.18.2",
+    "leveldown": "~0.10.2",
+    "jquery": "~2.1.0-beta3",
+    "level-sublevel": "~5.2.0",
+    "level-mapped-index": "~0.3.2",
+    "level-range": "0.0.0",
+    "JSONStream": "~0.7.1",
+    "concat-stream": "~1.4.1",
+    "level": "~0.18.0",
+    "slugger": "0.0.3",
+    "gravatar": "~1.0.6",
+    "through": "~2.3.4",
+    "liver": "~0.1.0",
+    "verymodel-level": "~1.0.0",
+    "sugar": "~1.4.1",
+    "getconfig": "~0.2.1",
+    "verymodel": "~1.5.1",
+    "passport-twitter": "~1.0.2"
+  },
+  "devDependencies": {}
+}

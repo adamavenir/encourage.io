@@ -1,0 +1,13 @@
+{
+    "hostname": "localhost",
+    "port": 5000,
+    "urls": {
+        "failureRedirect": "/login",
+        "successRedirect": "/"
+    },
+    "twitter": {
+        "consumerKey": "this",
+        "consumerSecret": "that",
+        "callbackURL": "http://localhost:5000/auth/twitter/callback"
+    }
+}

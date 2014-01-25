@@ -1,0 +1,21 @@
+extends layout
+
+block body
+  body
+    include in/header
+
+    h1 People
+    ul.people
+      for person in people
+        li
+          a(href='mailto:' + person.email)
+            img.grav(src= person.gravatar)
+            h3= person.name
+            p= person.daysSince 
+              span  days ago
+          a.deleteX(href='/people/delete/' + person.slug) x
+
+      li
+        a.andOne(href="/people/add") +
+
+    include in/footer
