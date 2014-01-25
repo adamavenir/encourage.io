@@ -1,3 +1,4 @@
+.DS_Store
 lib-cov
 *.seed
 *.log
@@ -11,5 +12,7 @@ pids
 logs
 results
 
+db
 npm-debug.log
 node_modules
+dev_config.json
