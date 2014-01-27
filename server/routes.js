@@ -1,7 +1,7 @@
 var views     = require('./views');
 var Types     = require('hapi').types;
 
-module.exports = function _routes(server) {
+module.exports = function _routes(server, views) {
 
   var Passport = server.plugins.travelogue.passport;
 
@@ -18,13 +18,14 @@ module.exports = function _routes(server) {
       }  
     },
 
-    { method: 'GET',  path: '/', handler: views.index },
+    { method: 'GET',  path: '/', handler: this.index },
 
     // PEOPLE
-    { method: 'GET',  path: '/people', handler: views.listPeople },
-    { method: 'GET',  path: '/people/add', handler: views.formPerson },
-    { method: 'POST', path: '/people/add', handler: views.createPerson },
-    { method: 'GET', path: '/people/delete/{person}', handler: views.deletePerson },
+    { method: 'GET',  path: '/people', handler: this.listPeople },
+    { method: 'GET',  path: '/people/{person}', handler: this.getPerson },
+    { method: 'GET',  path: '/people/add', handler: this.formPerson },
+    { method: 'POST', path: '/people/add', handler: this.createPerson },
+    { method: 'GET', path: '/people/delete/{person}', handler: this.deletePerson },
 
     // AUTH
 
@@ -47,7 +48,7 @@ module.exports = function _routes(server) {
           Passport.authenticate('twitter')(request, reply);
         }
       }
-    },  
+    },
 
     { method: 'GET', path: '/auth/twitter/callback',
       config: {
@@ -66,7 +67,8 @@ module.exports = function _routes(server) {
     { method: 'GET', path: '/logout',
       config: {
         handler: function (request, reply) {
-          request.session_logout();
+          request.session._logOut();
+          reply().redirect('/');
         }
       }
     }

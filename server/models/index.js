@@ -1,5 +1,6 @@
 var models = {
   Person: require('./Person'),
+  User: require('./User')
 };
 
 function attachDB(db) {

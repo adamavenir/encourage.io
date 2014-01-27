@@ -8,6 +8,14 @@ var type = verymodel.VeryType;
 
 var Person = new VeryLevelModel(
   {
+    uid: {
+      processIn: function(uid) {
+        console.log(uid);
+        return uid;
+      },
+      type: new type().isNumeric().len(1,80),
+      required: true
+    },
     name: {
       type: new type().isAlphanumeric().len(1,80),
       required: true
@@ -31,7 +39,12 @@ var Person = new VeryLevelModel(
     daysSince: {
       derive: function() {
         var today = Date.create('today');
-        return today.daysSince(this.when);
+        var since = today.daysSince(this.when);
+        if (since < 0) { 
+          since = since + 7; 
+          return since;
+        }
+        else return since;
       },
       private: true
     },
@@ -54,7 +67,7 @@ var Person = new VeryLevelModel(
     }
   }, 
   { 
-    prefix: 'people!'
+    prefix: 'uid!' + this.uid + '!pid!'
   }
 );
 
