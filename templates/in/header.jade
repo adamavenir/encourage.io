@@ -1,7 +1,11 @@
 header
-  nav 
-    a(href="/people") People
-    a(href="/login") Log in
-    a(href="/logout") Log out
-  span.user= user.displayName
-    img(src= user.img)
+  if (user)
+    nav 
+      a(href="/people") People
+      a(href="/session") Session
+      a(href="/logout") Log out
+    span.user= user.displayName
+      img(src= user.img)
+  else
+    nav 
+      a(href="/auth/twitter") Log in

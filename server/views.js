@@ -7,9 +7,14 @@ module.exports = function views(server) {
   ///////////////// INDEX
 
   index = function (request, reply) {
-    var user = request.session.user;
-    user.img = user._json.profile_image_url;
-    reply.view('index', { user : user });
+    if (request.session.user) {
+      var user = request.session.user;
+      user.img = user._json.profile_image_url;
+      reply.view('index', { user : user });
+    }
+    else {
+      reply.view('index');
+    }
   };
 
   ///////////////// AUTH
@@ -35,12 +40,21 @@ module.exports = function views(server) {
   twitterCallback = function (request, reply) {
     Passport.authenticate('twitter', {
       failureRedirect: '/login',
-      successRedirect: '/',
+      successRedirect: '/people',
       failureFlash: true
     })(request, reply, function () {
-      reply().redirect('/');
+      reply().redirect('/people');
     });
   };
+
+  session = function (request, reply) {
+    Passport.authenticate('twitter')(request, reply);
+    var html = '<a href="/auth/twitter">Login with Twitter</a>';
+    if (request.session) {
+      html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
+    }
+    reply(html);
+  };  
 
 
   ///////////////// PEOPLE
@@ -85,7 +99,7 @@ module.exports = function views(server) {
       var user = request.session.user;
       user.img = user._json.profile_image_url;
       if(data.length === 0) {
-        reply.view('noPeople');
+        reply.view('noPeople', { user : user });
       }
       else {
         reply.view('listPeople', { people : data, user : user });  

@@ -4,7 +4,13 @@ block body
   body
     include in/header
 
-    h1 Welcome, 
-      b= user.displayName
+    if (user)
+      h1 Welcome, 
+        b= user.displayName
+    else
+      h1 Welcome to encourage.io
+      p Something about what this is.
+      a(href="/auth/twitter")
+        button Log in
 
     include in/footer
