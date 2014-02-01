@@ -29,49 +29,10 @@ module.exports = function _routes(server, views) {
 
     // AUTH
 
-    { method: 'GET', path: '/login',
-      config: {
-        handler: function (request, reply) {
-          Passport.authenticate('twitter')(request, reply);
-          var html = '<a href="/auth/twitter">Login with Twitter</a>';
-          if (request.session) {
-            html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
-          }
-          reply(html);
-        }
-      }
-    },
-
-    { method: 'GET', path: '/auth/twitter',
-      config: {
-        handler: function (request, reply) {
-          Passport.authenticate('twitter')(request, reply);
-        }
-      }
-    },
-
-    { method: 'GET', path: '/auth/twitter/callback',
-      config: {
-        handler: function (request, reply) {
-          Passport.authenticate('twitter', {
-            failureRedirect: '/login',
-            successRedirect: '/',
-            failureFlash: true
-          })(request, reply, function () {
-            reply().redirect('/');
-          });
-        }
-      }
-    },
-
-    { method: 'GET', path: '/logout',
-      config: {
-        handler: function (request, reply) {
-          request.session._logOut();
-          reply().redirect('/');
-        }
-      }
-    }
+    { method: 'GET', path: '/login', handler: this.login },
+    { method: 'GET', path: '/auth/twitter', handler: this.twitterAuth },
+    { method: 'GET', path: '/auth/twitter/callback', handler: this.twitterCallback },
+    { method: 'GET', path: '/logout', handler: this.logout }
 
   ];
 

@@ -2,16 +2,53 @@ var Person = require('./models/Person');
 
 module.exports = function views(server) {
 
+  var Passport = server.plugins.travelogue.passport;
+
   ///////////////// INDEX
 
   index = function (request, reply) {
-    reply.view('index');
+    var user = request.session.user;
+    user.img = user._json.profile_image_url;
+    reply.view('index', { user : user });
   };
+
+  ///////////////// AUTH
+
+  login = function (request, reply) {
+    Passport.authenticate('twitter')(request, reply);
+    var html = '<a href="/auth/twitter">Login with Twitter</a>';
+    if (request.session) {
+      html += "<br/><br/><pre><span style='background-color: #eee'>session: " + JSON.stringify(request.session, null, 2) + "</span></pre>";
+    }
+    reply(html);
+  };
+
+  logout = function (request, reply) {
+    request.session._logOut();
+    reply().redirect('/');
+  };
+
+  twitterAuth = function (request, reply) {
+    Passport.authenticate('twitter')(request, reply);
+  };
+
+  twitterCallback = function (request, reply) {
+    Passport.authenticate('twitter', {
+      failureRedirect: '/login',
+      successRedirect: '/',
+      failureFlash: true
+    })(request, reply, function () {
+      reply().redirect('/');
+    });
+  };
+
 
   ///////////////// PEOPLE
 
   formPerson = function (request, reply) {
-    reply.view('formPerson');
+    var user = request.session.user;
+    user.img = user._json.profile_image_url;
+    reply.view('formPerson', { user : user });
   };
 
   createPerson = function (request, reply) {
@@ -45,11 +82,13 @@ module.exports = function views(server) {
 
   listPeople = function (request, reply) {
     Person.all(function(err, data) {
+      var user = request.session.user;
+      user.img = user._json.profile_image_url;
       if(data.length === 0) {
         reply.view('noPeople');
       }
       else {
-        reply.view('listPeople', { people : data});  
+        reply.view('listPeople', { people : data, user : user });  
       }
     });
   };

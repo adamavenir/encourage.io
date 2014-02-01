@@ -9,13 +9,8 @@ var config = require('getconfig');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
 var plugins = {
-    yar: {
-        cookieOptions: {
-            password: 'worldofwalmart',
-            isSecure: false
-        }
-    },
-    travelogue: config
+    yar: config.session,
+    travelogue: config.auth
 };
 
 models.attachDB(db);
@@ -37,7 +32,7 @@ server.pack.require(plugins, function(err) {
 
 var Passport = server.plugins.travelogue.passport;
 
-Passport.use(new TwitterStrategy(config.twitter, function(accessToken, refreshToken, profile, done) {
+Passport.use(new TwitterStrategy(config.auth.twitter, function(accessToken, refreshToken, profile, done) {
     
   return done(null, profile);
 }));
