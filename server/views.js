@@ -31,17 +31,29 @@ module.exports = function views(server) {
   };
 
   authenticated = function (request, reply) {
-    var user = request.session.user;
-    var u = User.create({
-      name : user.displayName,
-      twitterId : user.id,
-      avatar: user._json.profile_image_url
-    });
-    u.save(function (err) {
-      console.log('saved', u.__verymeta.data);
-      reply().code(201).redirect('/people');
-    });
-  }
+    User.getByIndex('twitterId', request.session.user.id, function (err, user) {
+      if (err) {
+        console.log('err', err)
+      }
+      if (user) {
+        console.log(user.__verymeta.data.key, 'user exists, logging in...');
+        request.session.userid = user.__verymeta.data.key;
+        reply().code(201).redirect('/people');
+      }
+      else {
+        var u = User.create({
+          name : request.session.user.displayName,
+          twitterId : request.session.user.id,
+          avatar: request.session.user._json.profile_image_url
+        });
+        u.save(function (err) {
+          console.log('saved', u.__verymeta.data);
+          reply().code(201).redirect('/people');
+          request.session.userid = u.__verymeta.data.key;
+        });
+      }
+    })
+  };
 
   logout = function (request, reply) {
     request.session._logOut();
@@ -76,7 +88,6 @@ module.exports = function views(server) {
 
   formPerson = function (request, reply) {
     var user = request.session.user;
-    user.img = user._json.profile_image_url;
     reply.view('formPerson', { user : user });
   };
 
@@ -117,16 +128,13 @@ module.exports = function views(server) {
   };
 
   listPeople = function (request, reply) {
-
-    User.getByIndex('twitterId', request.session.user.id, function (err, user) {
+    User.load(request.session.userid, function (err, user) {
       if (err) {
         console.log(err);
       }
       else {
         user.getChildren(Person, function (err, people) {
-          if (err) {
-            console.log(err);
-          }
+          if (err) { console.log(err); }
           if (people.length === 0) {
             reply.view('noPeople', { user : request.session.user });
           }
