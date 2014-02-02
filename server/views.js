@@ -34,10 +34,11 @@ module.exports = function views(server) {
     var user = request.session.user;
     var u = User.create({
       name : user.displayName,
-      twitterId  : user.id,
-      avatar: user._json.img
+      twitterId : user.id,
+      avatar: user._json.profile_image_url
     });
     u.save(function (err) {
+      console.log('saved', u.__verymeta.data);
       reply().code(201).redirect('/people');
     });
   }
@@ -80,10 +81,21 @@ module.exports = function views(server) {
   };
 
   createPerson = function (request, reply) {
-    var Passport = server.plugins.travelogue.passport;
-    Passport.authenticate('twitter')(request, reply);
+    // var Passport = server.plugins.travelogue.passport;
+    // Passport.authenticate('twitter')(request, reply);
     var form = request.payload;
-    var u = User.getByIndex('twitterId', request.session.user.id);
+
+    console.log('session id:', request.session.user.id)
+
+    var u = User.getByIndex('twitterId', request.session.user.id, function (err, objs) {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        console.log('got user', objs.__verymeta.data.twitterId);  
+      }
+    });
+
     var p = u.createChild(Person, {
       firstName : form.firstName,
       lastName  : form.lastName,

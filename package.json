@@ -26,7 +26,7 @@
     "sugar": "~1.4.1",
     "through": "~2.3.4",
     "verymodel": "~1.5.1",
-    "verymodel-level": "~1.0.0"
+    "verymodel-level": "~1.0.1"
   },
   "devDependencies": {},
   "homepage": "https://github.com/adambrault/encourage.io",

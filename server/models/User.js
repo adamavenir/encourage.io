@@ -21,11 +21,8 @@ var User = new VeryLevelModel(
       }, 
       private: false 
     },
-    key: {
-      processIn: function(twitterId) {
-        return twitterId;
-      },
-      index: "twitterId"
+    twitterId: {
+      index: true
     }
   },
   { 
