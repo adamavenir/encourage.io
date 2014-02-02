@@ -16,3 +16,4 @@ db
 npm-debug.log
 node_modules
 dev_config.json
+prod_config.json

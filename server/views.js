@@ -151,11 +151,9 @@ module.exports = function views(server) {
 
  resetPerson = function (request, reply) {
     User.load(request.session.userid, function (err, user) {
-      console.log('user', user);
       if (err) { console.log('err', err)}
       else {
         Person.load(request.params.person, function (err, person) {
-          console.log('user', user);
           if (err) { console.log('err', err) }
           else {
             var p = user.createChild(Person, {

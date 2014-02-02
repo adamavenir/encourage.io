@@ -10,7 +10,6 @@ var Person = new VeryLevelModel(
   {
     uid: {
       processIn: function(uid) {
-        console.log(uid);
         return uid;
       },
       type: new type().isNumeric().len(1,80),
