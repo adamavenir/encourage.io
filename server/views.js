@@ -1,4 +1,5 @@
 var Person = require('./models/Person');
+var User = require('./models/User');
 
 module.exports = function views(server) {
 
@@ -17,6 +18,7 @@ module.exports = function views(server) {
     }
   };
 
+
   ///////////////// AUTH
 
   login = function (request, reply) {
@@ -27,6 +29,18 @@ module.exports = function views(server) {
     }
     reply(html);
   };
+
+  dologin = function (request, reply) {
+    var user = request.session.user;
+    var u = User.create({
+      name : user.displayName,
+      twitterId  : user.id,
+      avatar: user._json.img
+    });
+    u.save(function (err) {
+      reply().code(201).redirect('/people');
+    });
+  }
 
   logout = function (request, reply) {
     request.session._logOut();
@@ -40,10 +54,10 @@ module.exports = function views(server) {
   twitterCallback = function (request, reply) {
     Passport.authenticate('twitter', {
       failureRedirect: '/login',
-      successRedirect: '/people',
+      successRedirect: '/authenticated',
       failureFlash: true
     })(request, reply, function () {
-      reply().redirect('/people');
+      reply().redirect('/authenticated');
     });
   };
 
@@ -69,16 +83,19 @@ module.exports = function views(server) {
     var Passport = server.plugins.travelogue.passport;
     Passport.authenticate('twitter')(request, reply);
     var form = request.payload;
-    var p = Person.create({
-      name  : form.name,
-      email : form.email,
-      when  : form.when,
-      uid   : request.session.user.id
+    var u = User.getByIndex('twitterId', request.session.user.id);
+    var p = u.createChild(Person, {
+      firstName : form.firstName,
+      lastName  : form.lastName,
+      email     : form.email,
+      when      : form.when
     });
-    console.log('uid:', request.session.user.id);
     p.save(function (err) {
-      Person.load(p.key, function (err, person) {
-        reply().code(201).redirect('/people');
+      u.getChildren(Person, function (err, objs) {
+        objs.forEach(function (person) {
+          console.log(person.__verymeta.parent.fullName + "adding: " + person.fullName);
+          reply().code(201).redirect('/people');
+        })
       })
     });
   };

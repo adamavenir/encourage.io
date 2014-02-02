@@ -53,6 +53,7 @@ module.exports = function _routes(server, views) {
     // AUTH
 
     { method: 'GET', path: '/login', handler: this.login },
+    { method: 'GET', path: '/authenticated', handler: this.dologin },
     { method: 'GET', path: '/session', handler: this.session },
     { method: 'GET', path: '/auth/twitter', handler: this.twitterAuth },
     { method: 'GET', path: '/auth/twitter/callback', handler: this.twitterCallback },

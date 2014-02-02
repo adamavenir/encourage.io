@@ -6,11 +6,11 @@ block body
 
     h1 Add someone
     form#addPerson(method="POST", action="/people/add", )
-      input#inputName(name="name", type="text", placeholder="Name")
-      input#inputEmail(name="email", type="text", placeholder="Email address")
+      input#inFirstName(name="firstName", type="text", placeholder="First name")
+      input#inLastName(name="lastName", type="text", placeholder="Last name")
+      input#inEmail(name="email", type="text", placeholder="Email address")
       label(for="when") When did you last connect with this person?
-      input#inputWhen(name="when", type="text", placeholder="'three months ago', 'yesterday', '4/10/1985'")
-
+      input#inWhen(name="when", type="text", placeholder="'three months ago', 'yesterday', '4/10/1985'")
       button(name="submit", type="submit") Add person
 
     include in/footer

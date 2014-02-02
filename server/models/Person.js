@@ -16,9 +16,19 @@ var Person = new VeryLevelModel(
       type: new type().isNumeric().len(1,80),
       required: true
     },
-    name: {
+    firstName: {
       type: new type().isAlphanumeric().len(1,80),
       required: true
+    },
+    lastName: {
+      type: new type().isAlphanumeric().len(1,80),
+      required: true
+    },
+    fullName: {
+      derive: function () {
+        return this.firstName + ' ' + this.lastName;
+      },
+      private: false
     },
     email: {
       type: new type().isEmail(),
@@ -46,7 +56,8 @@ var Person = new VeryLevelModel(
         }
         else return since;
       },
-      private: true
+      private: true,
+      index: "daysSince"
     },
     gravatar: { 
       derive: function() {
@@ -55,19 +66,14 @@ var Person = new VeryLevelModel(
     },
     slug: { 
       derive: function () {
-        return slugger(this.name);
+        return slugger(this.fullName);
       }, 
-      private: false 
-    },
-    key: { 
-      derive: function() {
-        return Person.options.prefix + this.slug 
-      }, 
-      private: false 
+      private: false,
+      index: "slug"
     }
   }, 
   { 
-    prefix: 'uid!' + this.uid + '!pid!'
+    prefix: 'people!'
   }
 );
 

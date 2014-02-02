@@ -12,14 +12,8 @@ var User = new VeryLevelModel(
       type: new type().isAlphanumeric().len(1,80),
       required: true
     },
-    email: {
-      type: new type().isEmail(),
-      required: true
-    },
-    gravatar: { 
-      derive: function() {
-        return gravatar.url(this.email, 100);
-      }
+    avatar: {
+      required: false
     },
     slug: { 
       derive: function () {
@@ -27,6 +21,12 @@ var User = new VeryLevelModel(
       }, 
       private: false 
     },
+    key: {
+      processIn: function(twitterId) {
+        return twitterId;
+      },
+      index: "twitterId"
+    }
   },
   { 
     prefix: 'users!'
