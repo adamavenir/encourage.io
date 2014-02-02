@@ -49,6 +49,11 @@ module.exports = function _routes(server, views) {
       config: { auth: 'passport' }, 
       handler: this.deletePerson 
     },
+    { method: 'GET', 
+      path: '/people/reset/{person}', 
+      config: { auth: 'passport' }, 
+      handler: this.resetPerson 
+    },
 
     // AUTH
 

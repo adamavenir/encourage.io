@@ -116,6 +116,7 @@ module.exports = function views(server) {
 
   };
 
+
   getPerson = function (request, reply) {
     Person.load(Person.options.prefix + request.params.person, function(err, value) {
       if (err) {
@@ -146,6 +147,36 @@ module.exports = function views(server) {
     });
 
   };
+
+
+ resetPerson = function (request, reply) {
+    User.load(request.session.userid, function (err, user) {
+      console.log('user', user);
+      if (err) { console.log('err', err)}
+      else {
+        Person.load(request.params.person, function (err, person) {
+          console.log('user', user);
+          if (err) { console.log('err', err) }
+          else {
+            var p = user.createChild(Person, {
+              firstName : person.firstName,
+              lastName  : person.lastName,
+              email     : person.email,
+              when      : "now"
+            });
+
+            p.save(function (err) {
+              console.log('reset', p.__verymeta.data.fullName)
+              reply().code(201).redirect('/people');
+              Person.delete(request.params.person, callback);
+              var callback = console.log('deleted', request.params.person)
+            });
+          }
+        })
+      }
+    })
+  };
+
 
   deletePerson = function (request, reply) {
     var key = request.params.person;
