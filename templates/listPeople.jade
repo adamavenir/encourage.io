@@ -10,11 +10,10 @@ block body
         li
           a(href='mailto:' + person.email)
             img.grav(src= person.gravatar)
-            h3= person.name
-            p= person.key
+            h3= person.fullName
             p= person.daysSince 
               span  days ago
-          a.deleteX(href='/people/delete/' + person.slug) x
+          a.deleteX(href='/people/delete/' + person.key) x
 
       li
         a.andOne(href="/people/add") +

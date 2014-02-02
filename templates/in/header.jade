@@ -6,7 +6,7 @@ header
       a(href="/session") Session
       a(href="/logout") Log out
     span.user= user.displayName
-      img(src= user.img)
+      img(src= user._json.profile_image_url)
   else
     nav 
       a(href="/auth/twitter") Log in

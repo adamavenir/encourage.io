@@ -30,7 +30,7 @@ module.exports = function views(server) {
     reply(html);
   };
 
-  dologin = function (request, reply) {
+  authenticated = function (request, reply) {
     var user = request.session.user;
     var u = User.create({
       name : user.displayName,
@@ -81,35 +81,28 @@ module.exports = function views(server) {
   };
 
   createPerson = function (request, reply) {
-    // var Passport = server.plugins.travelogue.passport;
-    // Passport.authenticate('twitter')(request, reply);
+
     var form = request.payload;
 
-    console.log('session id:', request.session.user.id)
-
-    var u = User.getByIndex('twitterId', request.session.user.id, function (err, objs) {
+    User.getByIndex('twitterId', request.session.user.id, function (err, user) {
       if (err) {
         console.log(err);
       }
       else {
-        console.log('got user', objs.__verymeta.data.twitterId);  
+        var p = user.createChild(Person, {
+          firstName : form.firstName,
+          lastName  : form.lastName,
+          email     : form.email,
+          when      : form.when
+        });
+
+        p.save(function (err) {
+          console.log('saved', p.__verymeta.data.fullName)
+          reply().code(201).redirect('/people');
+        });
       }
     });
 
-    var p = u.createChild(Person, {
-      firstName : form.firstName,
-      lastName  : form.lastName,
-      email     : form.email,
-      when      : form.when
-    });
-    p.save(function (err) {
-      u.getChildren(Person, function (err, objs) {
-        objs.forEach(function (person) {
-          console.log(person.__verymeta.parent.fullName + "adding: " + person.fullName);
-          reply().code(201).redirect('/people');
-        })
-      })
-    });
   };
 
   getPerson = function (request, reply) {
@@ -124,20 +117,30 @@ module.exports = function views(server) {
   };
 
   listPeople = function (request, reply) {
-    Person.all(function(err, data) {
-      var user = request.session.user;
-      user.img = user._json.profile_image_url;
-      if(data.length === 0) {
-        reply.view('noPeople', { user : user });
+
+    User.getByIndex('twitterId', request.session.user.id, function (err, user) {
+      if (err) {
+        console.log(err);
       }
       else {
-        reply.view('listPeople', { people : data, user : user });  
+        user.getChildren(Person, function (err, people) {
+          if (err) {
+            console.log(err);
+          }
+          if (people.length === 0) {
+            reply.view('noPeople', { user : request.session.user });
+          }
+          else {
+            reply.view('listPeople', { people : people, user : request.session.user });
+          }
+        });
       }
     });
+
   };
 
   deletePerson = function (request, reply) {
-    var key = Person.options.prefix + request.params.person;
+    var key = request.params.person;
     Person.delete(key, callback);
     var callback = reply.view('deleted').redirect('/people');
   };
